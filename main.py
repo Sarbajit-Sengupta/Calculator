@@ -18,26 +18,29 @@ class myApp(App):
 
         clear_button = Button(text = 'Clear', size_hint_y=None, height=100)
         def print_button_text(instance):
+            if output_label.text == 'Error':
+                output_label.text = ''
             output_label.text += instance.text
         for button in button_grid.children[1:]:
             button.bind(on_press=print_button_text)
         def resize_label_text(label, new_height):
-            label.fontsize = 0.5*label.height
+            label.font_size = 0.5*label.height
         output_label.bind(height=resize_label_text)
 
         def evaluate_result(instance):
             try:
                 output_label.text = str(eval(output_label.text))
-            except SyntaxError:
-                output_label.text = 'Python Syntax error!'
+            except (SyntaxError, ArithmeticError, ValueError):
+                output_label.text = 'Error'
         button_grid.children[0].bind(on_press=evaluate_result)
 
         def clear_label(instance):
-            output_label.text = " "
+            output_label.text = ""
         clear_button.bind(on_press=clear_label)
 
         root_widget.add_widget(output_label)
         root_widget.add_widget(button_grid)
         root_widget.add_widget(clear_button)
         return root_widget
-myApp().run()
+if __name__ == "__main__":
+    myApp().run()
